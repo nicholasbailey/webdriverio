@@ -37,6 +37,7 @@ class SpecReporter extends WDIOReporter {
     }
 
     onHookEnd (hook) {
+        // NICKBAILEY Fix this
         if (hook.error) {
             this.stateCounts.failed++
         }
@@ -228,7 +229,7 @@ class SpecReporter extends WDIOReporter {
                 }
 
                 const testTitle = test.title
-
+                // NICKBAILEY fix this
                 // If we get here then there is a failed test
                 output.push(
                     '',

@@ -11,6 +11,13 @@ import RunnerStats from './stats/runner'
 
 import { MOCHA_TIMEOUT_MESSAGE, MOCHA_TIMEOUT_MESSAGE_REPLACEMENT } from './constants'
 
+
+function getErrorsFromMessage(message) {
+    if (message.errors) return message.errors
+    if (message.error) return [message.error]
+    return []
+}
+
 export default class WDIOReporter extends EventEmitter {
     constructor (options) {
         super()
@@ -20,7 +27,7 @@ export default class WDIOReporter extends EventEmitter {
         if (this.options.outputDir) {
             fse.ensureDirSync(this.options.outputDir)
         }
-        
+
         this.outputStream = this.options.stdout || !this.options.logFile
             ? options.writeStream
             : fs.createWriteStream(this.options.logFile)
@@ -74,7 +81,7 @@ export default class WDIOReporter extends EventEmitter {
 
         this.on('hook:end',  /* istanbul ignore next */ (hook) => {
             const hookStat = this.hooks[hook.uid]
-            hookStat.complete(hook.error)
+            hookStat.complete(getErrorsFromMessage(hook))
             this.counts.hooks++
             this.onHookEnd(hookStat)
         })
@@ -108,7 +115,7 @@ export default class WDIOReporter extends EventEmitter {
                 test.error.stack = test.error.stack.replace(MOCHA_TIMEOUT_MESSAGE, replacement)
             }
 
-            testStat.fail(test.error)
+            testStat.fail(getErrorsFromMessage(test))
             this.counts.failures++
             this.counts.tests++
             this.onTestFail(testStat)

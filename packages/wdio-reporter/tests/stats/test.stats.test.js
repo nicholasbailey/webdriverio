@@ -1,4 +1,4 @@
-import TestStats from '../src/stats/test'
+import TestStats from '../../src/stats/test'
 
 describe('TestStats', () => {
     let stat
